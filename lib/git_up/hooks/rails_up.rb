@@ -1,7 +1,7 @@
 module GitUp
   module Hooks
     class RailsUp < Hook
-      BUNDLE_COMMAND = "bundle --local || bundle"
+      BUNDLE_COMMAND = "(bundle --local || bundle)"
 
       def run
         shell.enqueue(:notify, "Running RailsUp")
@@ -32,20 +32,23 @@ module GitUp
       # bundle first.
       def enqueue_commands
         @commands.each do |dir, commands|
+          cmds = []
           if commands.include? :bundle
-            shell.enqueue(:run, BUNDLE_COMMAND, dir: dir)
+            cmds << BUNDLE_COMMAND
           end
 
           if commands.include? :migrate
             ['test', 'development'].each do |env|
-              shell.enqueue(:run, migrate(env), dir: dir)
+              cmds << migrate(env)
             end
           end
+
+          shell.enqueue(:run, cmds.join(' && '), dir: dir)
         end
       end
 
       def migrate(env)
-        "RAILS_ENV=#{env} bundle exec rake #{options[:db_reset] ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{env} bundle exec rake db:migrate"
+        "(RAILS_ENV=#{env} bundle exec rake #{options[:db_reset] ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{env} bundle exec rake db:migrate)"
       end
     end
   end

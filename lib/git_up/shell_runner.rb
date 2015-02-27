@@ -13,6 +13,7 @@ module GitUp
       @one_liner = ''
       @log_path = log_path
       @queue = WorkQueue.new(MAX_PROCESS_COUNT, nil)
+      Dir.chdir(%x[ git rev-parse --show-toplevel ].chomp)
 
       reset_log
     end
@@ -38,9 +39,9 @@ module GitUp
       @queue = WorkQueue.new(MAX_PROCESS_COUNT, nil)
     end
 
-    def enqueue(method, args)
+    def enqueue(method, *args)
       queue.enqueue_b do
-        send(method, args)
+        send(method, *args)
       end
     end
 
@@ -55,6 +56,7 @@ module GitUp
     end
 
     def handle_output_for(cmd)
+      puts cmd
       log(cmd)
     end
 

@@ -8,8 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = GitUp::VERSION
   spec.authors       = ["Pete Kinnecom"]
   spec.email         = ["pete.kinnecom@appfolio.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{Git wrapper for running scripts}
   spec.homepage      = ""
   spec.license       = "MIT"
 

@@ -6,3 +6,5 @@ gemspec
 gem 'minitest'
 gem 'pry'
 gem 'mocha'
+
+ruby '2.1.5'
