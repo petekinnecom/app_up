@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'thor'
+require_relative '../lib/git_up/repo'
+require_relative '../lib/git_up/hook_runner'
+require_relative '../lib/git_up/hook_loader'
+require_relative '../lib/git_up/shell_runner'
+
+class AppUpCLI < Thor
+
+  desc :run, description: "do stuff"
+  option :diff, type: :array, desc: "SHAs to be diffed"
+  option :all, type: :boolean, desc: "Run all of the hooks"
+
+  def run_hooks
+    shell = GitUp::ShellRunner.new(
+      log_path: '/tmp/git_up.log',
+      working_directory: '.'
+    )
+
+    files = GitUp::Repo.new(shell, options).files
+    GitUp::HookRunner.new(shell, files, options).run
+  end
+
+  default_task :run_hooks
+end
+
+AppUpCLI.start(ARGV)

@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+#PETE: make this a bash script
+
+def get_sha
+  %x{git rev-parse HEAD}.chomp
+end
+
+start_sha = get_sha
+puts %x{git #{ARGV.join(' ')}}
+raise Error unless $?.success?
+end_sha = get_sha
+
+Kernel.exec "/Users/pete/personal/git_up/bin/app_up --diff #{start_sha} #{end_sha}"
