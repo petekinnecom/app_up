@@ -1,53 +1,52 @@
 module GitUp
   module Hooks
     class RailsUp < Hook
+      BUNDLE_COMMAND = "bundle --local || bundle"
 
       def run
-        shell.enqueue(:notify, "Running AppUp")
+        shell.enqueue(:notify, "Running RailsUp")
+
+        files.each do |file|
+          if File.basename(file) == "Gemfile.lock"
+            add_command(:bundle, dir: File.split(file)[0])
+          end
+
+          if file.match(/db\/migrate/)
+            add_command(:migrate, dir: file.sub(/\/db\/migrate\/.*/, ''))
+          end
+        end
+
+        enqueue_commands
+      end
+
+      private
+
+      def add_command(command, dir:)
+        @commands ||= {}
+        @commands[dir] ||= []
+        @commands[dir] << command
+      end
+
+      # We need to ensure that bundle is run before migrate. 
+      # So we group the commands by their root folder, and 
+      # bundle first.
+      def enqueue_commands
+        @commands.each do |dir, commands|
+          if commands.include? :bundle
+            shell.enqueue(:run, BUNDLE_COMMAND, dir: dir)
+          end
+
+          if commands.include? :migrate
+            ['test', 'development'].each do |env|
+              shell.enqueue(:run, migrate(env), dir: dir)
+            end
+          end
+        end
+      end
+
+      def migrate(env)
+        "RAILS_ENV=#{env} bundle exec rake #{options[:db_reset] ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{env} bundle exec rake db:migrate"
       end
     end
   end
-end
-
-class Migrator
-  attr_accessor :shell, :repo, :queue, :folder_guard, :drop_dbs
-
-  def initialize(repo:, shell:, queue:, folder_guard:, drop_dbs: false)
-    @shell = shell
-    @repo = repo
-    @queue = queue
-    @drop_dbs = drop_dbs
-    @folder_guard = folder_guard
-  end
-
-  def migrate_where_necessary
-    shell.notify "\nMigrating:"
-    migrations.each do |migration|
-      queue.enqueue_b do
-        shell.run "RAILS_ENV=#{migration[:env]} bundle exec rake #{drop_dbs ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{migration[:env]} bundle exec rake db:migrate", dir: migration[:dir]
-      end
-    end
-    queue.join
-  end
-
-  def directories_to_migrate
-    migrate_dirs = repo.files_changed.select {|f| f.match("/migrate/") }.map {|f| File.dirname(f) }.map {|dir| dir.gsub(/\/db\/migrate$/, '')}.uniq
-    migrate_dirs.select {|d| folder_guard.allowed?(d) };
-  end
-
-  private
-
-  def migrations
-    directories_to_migrate.map do |dir|
-      [
-        {env: "development",dir: dir},
-        {env: "test", dir: dir}
-      ]
-    end.flatten
-  end
-
-  def in_rack_application?(migrate_dir)
-    folder_guard.allowed?(migrate_dir)
-  end
-
 end
