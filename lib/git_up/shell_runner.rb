@@ -64,7 +64,6 @@ module GitUp
       %x{ set -o pipefail && #{command} 2>> #{log_path} | tee -a #{log_path} }.chomp.tap do
         warn "The following command has failed: #{command}.  See #{log_path} for a full log." if ($?.exitstatus != 0)
       end
-      return $?.exitstaus == 0
     end
 
   end

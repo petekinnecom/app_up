@@ -1,3 +1,5 @@
+require "git_up/hook_loader"
+
 module GitUp
   class HookRunner < Struct.new(:shell, :files, :options)
 

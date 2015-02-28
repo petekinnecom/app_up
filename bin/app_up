@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'thor'
-require_relative '../lib/git_up/repo'
-require_relative '../lib/git_up/hook_runner'
-require_relative '../lib/git_up/hook_loader'
-require_relative '../lib/git_up/shell_runner'
+require_relative '../lib/git_up'
 
 class AppUpCLI < Thor
 

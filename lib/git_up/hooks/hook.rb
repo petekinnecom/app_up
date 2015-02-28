@@ -1,3 +1,5 @@
+require "git_up/hooks/hook"
+
 module GitUp
   module Hooks
     class Hook < Struct.new(:shell, :files, :options)

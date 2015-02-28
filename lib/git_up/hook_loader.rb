@@ -1,5 +1,4 @@
-require_relative './hooks/hook'
-require_relative './hooks/rails_up'
+require "git_up/hooks/rails_up"
 
 module GitUp
   class HookLoader
