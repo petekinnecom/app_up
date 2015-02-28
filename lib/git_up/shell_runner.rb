@@ -8,20 +8,26 @@ module GitUp
     attr_accessor :working_directory, :log_path, :queue
     private :working_directory, :log_path, :queue
 
-    def initialize(log_path:, working_directory:)
+    def initialize(log_path:, working_directory:, verbose: false)
       @working_directory = working_directory
       @one_liner = ''
       @log_path = log_path
       @queue = WorkQueue.new(MAX_PROCESS_COUNT, nil)
+      @verbose = verbose
       Dir.chdir(%x[ git rev-parse --show-toplevel ].chomp)
 
       reset_log
     end
 
-    def run(cmd, dir: working_directory)
+    # The block passed to run is a callback. It is used
+    # to add a dependent command to the queue.
+    def run(cmd, dir: working_directory, &block)
       command = "cd #{dir} && #{cmd}"
       handle_output_for(command)
-      shell_out(command).split("\n")
+
+      shell_out(command).split("\n").tap do
+        block.call if block_given?
+      end
     end
 
     def warn(msg)
@@ -34,15 +40,14 @@ module GitUp
       puts msg.to_s.yellow
     end
 
-    def flush
-      queue.join
-      @queue = WorkQueue.new(MAX_PROCESS_COUNT, nil)
+    def enqueue(method, *args, &block)
+      queue.enqueue_b do
+        send(method, *args, &block)
+      end
     end
 
-    def enqueue(method, *args)
-      queue.enqueue_b do
-        send(method, *args)
-      end
+    def flush
+      queue.join
     end
 
     private
@@ -56,7 +61,7 @@ module GitUp
     end
 
     def handle_output_for(cmd)
-      puts cmd
+      puts cmd if @verbose
       log(cmd)
     end
 

@@ -3,7 +3,7 @@ require "git_up/hooks/hook"
 module GitUp
   module Hooks
     class RailsUp < Hook
-      BUNDLE_COMMAND = "(bundle --local || bundle)"
+      BUNDLE_COMMAND = "bundle --local || bundle"
 
       def run
         shell.enqueue(:notify, "Running RailsUp")
@@ -23,34 +23,39 @@ module GitUp
 
       private
 
-      def add_command(command, dir:)
+      def add_command(action, dir:)
         @commands ||= {}
         @commands[dir] ||= []
-        @commands[dir] << command
+        @commands[dir] << action unless @commands[dir].include? action
       end
 
       # We need to ensure that bundle is run before migrate. 
       # So we group the commands by their root folder, and 
       # bundle first.
       def enqueue_commands
-        @commands.each do |dir, commands|
-          cmds = []
-          if commands.include? :bundle
-            cmds << BUNDLE_COMMAND
-          end
-
-          if commands.include? :migrate
+        @commands.each do |dir, actions|
+          migrate_block = Proc.new {
             ['test', 'development'].each do |env|
-              cmds << migrate(env)
+              shell.enqueue(:run, migrate(env), dir: dir)
             end
+          }
+
+          actions.each do |command|
+            shell.enqueue(:notify, "#{command} : #{dir}")
           end
 
-          shell.enqueue(:run, cmds.join(' && '), dir: dir)
+          if [:bundle, :migrate].all? { |c| actions.include?(c) }
+            shell.enqueue(:run, BUNDLE_COMMAND, dir: dir, &migrate_block)
+          elsif actions.include? :bundle
+            shell.enqueue(:run, BUNDLE_COMMAND, dir: dir)
+          elsif actions.include? :migrate
+            migrate_block.call
+          end
         end
       end
 
       def migrate(env)
-        "(RAILS_ENV=#{env} bundle exec rake #{options[:db_reset] ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{env} bundle exec rake db:migrate)"
+        "RAILS_ENV=#{env} bundle exec rake #{options[:db_reset] ? 'db:drop' : ''} db:create 2> /dev/null;\n RAILS_ENV=#{env} bundle exec rake db:migrate"
       end
     end
   end
