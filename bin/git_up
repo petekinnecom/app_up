@@ -7,7 +7,9 @@ def get_sha
 end
 
 start_sha = get_sha
-puts %x{git #{ARGV.join(' ')}}
+
+command = (ARGV.size > 0) ?  ARGV.join(' ') : 'pull --rebase origin master'
+puts %x{git #{command}}
 raise Error unless $?.success?
 end_sha = get_sha
 
