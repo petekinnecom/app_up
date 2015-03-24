@@ -8,6 +8,7 @@ class AppUpCLI < Thor
   desc :run, description: "do stuff"
   option :diff, type: :array, desc: "SHAs to be diffed"
   option :all, type: :boolean, desc: "Run all of the hooks"
+  option :verbose, type: :boolean, desc: "say all things"
 
   def run_hooks
     shell = GitUp::ShellRunner.new(

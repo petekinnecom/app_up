@@ -10,7 +10,6 @@ module GitUp
 
     def initialize(log_path:, working_directory:, verbose: false)
       @working_directory = working_directory
-      @one_liner = ''
       @log_path = log_path
       @queue = WorkQueue.new(MAX_PROCESS_COUNT, nil)
       @verbose = verbose
@@ -32,12 +31,12 @@ module GitUp
 
     def warn(msg)
       log msg.to_s
-      puts msg.to_s.red
+      print "#{msg.to_s.red}\n"
     end
 
     def notify(msg)
       log msg.to_s
-      puts msg.to_s.yellow
+      print "#{msg.to_s.yellow}\n"
     end
 
     def enqueue(method, *args, &block)

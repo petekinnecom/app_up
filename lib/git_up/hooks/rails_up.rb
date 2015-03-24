@@ -6,7 +6,7 @@ module GitUp
       BUNDLE_COMMAND = "bundle --local || bundle"
 
       def run
-        shell.enqueue(:notify, "Running RailsUp")
+        shell.notify( "Running RailsUp\n----------")
 
         files.each do |file|
           if File.basename(file) == "Gemfile.lock"
@@ -41,7 +41,7 @@ module GitUp
           }
 
           actions.each do |command|
-            shell.enqueue(:notify, "#{command} : #{dir}")
+            shell.enqueue(:notify, "#{command.to_s.ljust(7)} : #{dir}")
           end
 
           if [:bundle, :migrate].all? { |c| actions.include?(c) }
