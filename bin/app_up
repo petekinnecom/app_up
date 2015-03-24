@@ -9,6 +9,7 @@ class AppUpCLI < Thor
   option :diff, type: :array, desc: "SHAs to be diffed"
   option :all, type: :boolean, desc: "Run all of the hooks"
   option :verbose, type: :boolean, desc: "say all things"
+  option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: "Drop and recreate all databases"
 
   def run_hooks
     shell = GitUp::ShellRunner.new(
