@@ -33,6 +33,9 @@ module GitUp
       # So we group the commands by their root folder, and 
       # bundle first.
       def enqueue_commands
+        command_count = @commands.values.flatten.size.to_s
+
+        i = 1
         @commands.each do |dir, actions|
           migrate_block = Proc.new {
             ['test', 'development'].each do |env|
@@ -41,7 +44,8 @@ module GitUp
           }
 
           actions.each do |command|
-            shell.enqueue(:notify, "#{command.to_s.ljust(7)} : #{dir}")
+            shell.enqueue(:notify, "#{i.to_s.rjust(command_count.length)}/#{command_count.to_s} #{command.to_s.ljust(7)} : #{dir}")
+            i+=1
           end
 
           if [:bundle, :migrate].all? { |c| actions.include?(c) }
