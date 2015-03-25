@@ -5,6 +5,11 @@ module GitUp
     class RailsUp < Hook
       BUNDLE_COMMAND = "bundle --local || bundle"
 
+      def initialize(*args)
+        @commands = {}
+        super(*args)
+      end
+
       def run
         shell.notify( "Running RailsUp\n----------")
 
@@ -24,7 +29,6 @@ module GitUp
       private
 
       def add_command(action, dir:)
-        @commands ||= {}
         @commands[dir] ||= []
         @commands[dir] << action unless @commands[dir].include? action
       end
@@ -34,7 +38,6 @@ module GitUp
       # bundle first.
       def enqueue_commands
         command_count = @commands.values.flatten.size.to_s
-
         i = 1
         @commands.each do |dir, actions|
           migrate_block = Proc.new {
