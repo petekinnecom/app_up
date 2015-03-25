@@ -8,11 +8,16 @@ module GitUp
       def initialize
         @history = {
           enqueue: [],
+          notify: [],
         }
       end
 
       def enqueue(*args)
         history[:enqueue] << args
+      end
+
+      def notify(*args)
+        history[:notify] << args
       end
 
     end
@@ -65,7 +70,6 @@ module GitUp
         no_drop_hook = RailsUp.new('stub', 'stub', {db_reset: true})
         assert no_drop_hook.send(:migrate, 'test').match(/db:drop/)
       end
-
     end
   end
 end
