@@ -40,6 +40,8 @@ module AppUp
       end
 
       def notify(msg)
+        return if @verbose
+
         log msg.to_s
         print "#{yellow(msg.to_s)}\n"
       end

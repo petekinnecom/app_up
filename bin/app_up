@@ -6,6 +6,7 @@ require 'app_up'
 class AppUpCLI < Thor
 
   desc :run_hooks, "do the stuff"
+
   option :diff, type: :array, desc: "SHAs to be diffed"
   option :all, type: :boolean, desc: "Run all of the hooks"
   option :verbose, type: :boolean, desc: "say all things"
@@ -14,7 +15,8 @@ class AppUpCLI < Thor
   def run_hooks
     shell = AppUp::Shell::Runner.new(
       log_path: '/tmp/app_up.log',
-      working_directory: '.'
+      working_directory: '.',
+      verbose: options[:verbose],
     )
 
     if options[:diff] && options[:diff].size == 1
