@@ -14,7 +14,10 @@ module AppUp
         shell.notify( "Running RailsUp\n----------")
 
         files.each do |file|
-          if File.basename(file) == "Gemfile.lock"
+          # allow rebundle on only Gemfile edit, in case you're
+          # upping a gem, which probably doesn't have the Gemfile.lock
+          # checked in
+          if File.basename(file).match(/Gemfile(\.lock)?|gemspec$/)
             add_command(:bundle, dir: File.split(file)[0])
           end
 
