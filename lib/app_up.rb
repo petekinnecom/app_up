@@ -7,13 +7,7 @@ require "app_up/config_loader"
 require "app_up/config"
 
 module AppUp
-#  include ConfigLoader
+  extend ConfigLoader
 
-#  config config_class: Config, filename: ".app_up"
-
-  def self.config
-    yield Config
-  end
-
-  ConfigLoader.new(self, Config, ".app_up").run
+  user_config config_class: Config, filename: ".app_up"
 end
