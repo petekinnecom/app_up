@@ -24,8 +24,8 @@ class AppUpCLI < Thor
       verbose: options[:verbose],
     )
 
-    fixed_options = options.to_hash
-    if !fixed_options.has_key?(:diff)
+    fixed_options = options.dup
+    if !fixed_options[:diff]
       fixed_options[:all] = true
     elsif fixed_options[:diff].size == 1
       fixed_options[:diff] << "HEAD"
