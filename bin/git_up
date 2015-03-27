@@ -1,6 +1,20 @@
 #!/usr/bin/env ruby
 
 #PETE: make this a bash script
+if ARGV[0] == "--help" || ARGV[0] == "-h"
+  puts <<-HELP
+  ---
+  git_up is a wrapper for git.  It compares the starting SHA and ending SHA of a git action and will run hooks to bundle and migrate your application.
+
+  You can pass git_up any git command.  e.g. "git_up pull origin master"
+
+  If you pass no arguments, git_up will default to calling "git_up pull --rebase origin master"
+
+  See "app_up --help run_hooks" to see how the bundle/migration works.
+  ---
+  HELP
+  exit
+end
 
 def get_sha
   %x{git rev-parse HEAD}.chomp

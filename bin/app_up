@@ -5,12 +5,17 @@ require 'app_up'
 
 class AppUpCLI < Thor
 
-  desc :run_hooks, "do the stuff"
+  desc :run_hooks, %{Run "app_up --help run_hooks" to learn more}
+  long_desc <<-DESC
+    app_up automatically run "bundle install" and "rake db:migrate" in your app.  It decides what to do based on the options listed above.
 
-  option :diff, type: :array, desc: "SHAs to be diffed"
-  option :all, type: :boolean, desc: "Run all of the hooks"
-  option :verbose, type: :boolean, desc: "say all things"
-  option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: "Drop and recreate all databases"
+    The AppUp gem installs two executables: "app_up" and "git_up".  It is often more convenient to use the "git_up" command, which itself calls this "app_up" executable.
+  DESC
+
+  option :diff, type: :array, desc: %{Provide Git SHAs to be diffed.  e.g. "app_up --diff HEAD d3be822a".  If only one SHA is given, the second will default to HEAD.}
+  option :all, type: :boolean, desc: %{Run all hooks without diffing anything.  This is the default action.}
+  option :verbose, type: :boolean, desc: %{Show the commands being run}
+  option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: %{Drop databases before creating and migrating}
 
   def run_hooks
     shell = AppUp::Shell::Runner.new(
@@ -19,7 +24,9 @@ class AppUpCLI < Thor
       verbose: options[:verbose],
     )
 
-    if options[:diff] && options[:diff].size == 1
+    if !options.has_key?(:diff)
+      options[:all] = true
+    elsif options[:diff].size == 1
       options[:diff] << "HEAD"
     end
 
