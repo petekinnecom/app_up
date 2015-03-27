@@ -43,6 +43,11 @@ module AppUp
       # So we group the commands by their root folder, and 
       # bundle first.
       def enqueue_commands
+        if @commands.empty?
+          shell.notify("Nothing to do")
+          return
+        end
+
         command_count = @commands.values.flatten.size.to_s
         i = 1
         @commands.each do |dir, actions|
