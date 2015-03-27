@@ -24,14 +24,15 @@ class AppUpCLI < Thor
       verbose: options[:verbose],
     )
 
-    if !options.has_key?(:diff)
-      options[:all] = true
-    elsif options[:diff].size == 1
-      options[:diff] << "HEAD"
+    fixed_options = options.to_hash
+    if !fixed_options.has_key?(:diff)
+      fixed_options[:all] = true
+    elsif fixed_options[:diff].size == 1
+      fixed_options[:diff] << "HEAD"
     end
 
-    files = AppUp::Repo.new(shell, options).files
-    AppUp::Hooks::Runner.new(shell, files, options).run
+    files = AppUp::Repo.new(shell, fixed_options).files
+    AppUp::Hooks::Runner.new(shell, files, fixed_options).run
   end
 
   default_task :run_hooks
