@@ -3,7 +3,7 @@
 require 'thor'
 require 'pry'
 require 'pry-rescue'
-require_relative '../lib/app_up'
+require 'app_up'
 
 class AppUpCLI < Thor
 
