@@ -1,6 +1,6 @@
-require "git_up/hooks/hook"
+require "app_up/hooks/hook"
 
-module GitUp
+module AppUp
   module Hooks
     class RailsUp < Hook
       BUNDLE_COMMAND = "bundle --local || bundle"

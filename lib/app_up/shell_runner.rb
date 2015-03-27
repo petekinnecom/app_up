@@ -1,6 +1,6 @@
 require 'work_queue'
 
-module GitUp
+module AppUp
   class ShellRunner
     MAX_PROCESS_COUNT = 8
     CommandFailureError = Class.new(StandardError)

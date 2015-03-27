@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'git_up/version'
+require 'app_up/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "git_up"
-  spec.version       = GitUp::VERSION
+  spec.name          = "app_up"
+  spec.version       = AppUp::VERSION
   spec.authors       = ["Pete Kinnecom"]
   spec.email         = ["pete.kinnecom@appfolio.com"]
   spec.summary       = %q{Git wrapper for running scripts}

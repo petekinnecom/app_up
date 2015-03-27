@@ -1,3 +1,3 @@
-module GitUp
+module AppUp
   VERSION = "0.0.1"
 end

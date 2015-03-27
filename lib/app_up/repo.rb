@@ -1,4 +1,4 @@
-module GitUp
+module AppUp
   class Repo < Struct.new(:shell, :options)
 
     def files

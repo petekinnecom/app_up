@@ -1,6 +1,6 @@
 require 'test_helper'
 
-module GitUp
+module AppUp
   module Hooks
     class DummyShell
       attr_reader :history

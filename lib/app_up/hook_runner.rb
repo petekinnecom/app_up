@@ -1,6 +1,6 @@
-require "git_up/hook_loader"
+require "app_up/hook_loader"
 
-module GitUp
+module AppUp
   class HookRunner < Struct.new(:shell, :files, :options)
 
     def run

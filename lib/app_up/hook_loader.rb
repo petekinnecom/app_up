@@ -1,6 +1,6 @@
-require "git_up/hooks/rails_up"
+require "app_up/hooks/rails_up"
 
-module GitUp
+module AppUp
   class HookLoader
 
     def self.load

@@ -7,7 +7,7 @@ TODO: Write a gem description
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'git_up'
+gem 'app_up'
 ```
 
 And then execute:
