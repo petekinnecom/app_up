@@ -27,4 +27,4 @@ puts %x{git #{command}}
 raise Error unless $?.success?
 end_sha = get_sha
 
-Kernel.exec "/Users/pete/personal/app_up/bin/app_up --diff #{start_sha} #{end_sha}"
+Kernel.exec "app_up --diff #{start_sha} #{end_sha}"
