@@ -14,15 +14,13 @@ class AppUpCLI < Thor
   option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: "Drop and recreate all databases"
 
   def run_hooks
-    Pry.rescue do
-      shell = AppUp::ShellRunner.new(
-        log_path: '/tmp/app_up.log',
-        working_directory: '.'
-      )
+    shell = AppUp::ShellRunner.new(
+      log_path: '/tmp/app_up.log',
+      working_directory: '.'
+    )
 
-      files = AppUp::Repo.new(shell, options).files
-      AppUp::HookRunner.new(shell, files, options).run
-    end
+    files = AppUp::Repo.new(shell, options).files
+    AppUp::HookRunner.new(shell, files, options).run
   end
 
   default_task :run_hooks
