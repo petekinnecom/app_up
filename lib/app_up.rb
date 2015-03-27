@@ -1,13 +1,12 @@
 require "app_up/version"
-require "app_up/path"
-require "app_up/hook_runner"
+require "app_up/utils/path"
+require "app_up/hooks/runner"
 require "app_up/repo"
-require "app_up/shell_runner"
-require "app_up/config_loader"
-require "app_up/config"
+require "app_up/shell/runner"
+require "app_up/configuration/loader"
 
 module AppUp
-  extend ConfigLoader
+  extend Configuration::Loader
 
-  user_config config_class: Config, filename: ".app_up"
+  user_config filename: ".app_up"
 end

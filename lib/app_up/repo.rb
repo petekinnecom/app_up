@@ -4,7 +4,7 @@ module AppUp
     private :shell, :options
 
     def files
-      ignores = options.has_key?(:ingore) ? options[:ignore] : Config.ignore
+      ignores = options.has_key?(:ingore) ? options[:ignore] : Configuration::Config.ignore
       default_files.reject {|f| ignores.any? {|i| f.match(i)} }
     end
 

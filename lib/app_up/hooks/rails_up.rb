@@ -14,7 +14,7 @@ module AppUp
         shell.notify( "Running RailsUp\n----------")
 
         files.each do |file|
-          exploded_path = Path.split(file)
+          exploded_path = Utils::Path.split(file)
 
           # allow rebundle on only Gemfile edit, in case you're
           # upping a gem, which probably doesn't have the Gemfile.lock
@@ -53,7 +53,7 @@ module AppUp
           }
 
           actions.each do |command|
-            shell.enqueue(:notify, "#{i.to_s.rjust(command_count.length)}/#{command_count.to_s} #{command.to_s.ljust(7)} : #{Path.join(dir)}")
+            shell.enqueue(:notify, "#{i.to_s.rjust(command_count.length)}/#{command_count.to_s} #{command.to_s.ljust(7)} : #{Utils::Path.join(dir)}")
             i+=1
           end
 

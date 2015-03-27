@@ -1,28 +1,28 @@
 #!/usr/bin/env ruby
 
 require 'thor'
-require 'pry'
-require 'pry-rescue'
 require 'app_up'
 
 class AppUpCLI < Thor
 
-  desc :run, description: "do stuff"
+  desc :run_hooks, "do the stuff"
   option :diff, type: :array, desc: "SHAs to be diffed"
   option :all, type: :boolean, desc: "Run all of the hooks"
   option :verbose, type: :boolean, desc: "say all things"
   option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: "Drop and recreate all databases"
 
   def run_hooks
-    Pry.rescue do
-    shell = AppUp::ShellRunner.new(
+    shell = AppUp::Shell::Runner.new(
       log_path: '/tmp/app_up.log',
       working_directory: '.'
     )
 
-    files = AppUp::Repo.new(shell, options).files
-    AppUp::HookRunner.new(shell, files, options).run
+    if options[:diff] && options[:diff].size == 1
+      options[:diff] << "HEAD"
     end
+
+    files = AppUp::Repo.new(shell, options).files
+    AppUp::Hooks::Runner.new(shell, files, options).run
   end
 
   default_task :run_hooks
