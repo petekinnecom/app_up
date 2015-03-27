@@ -14,15 +14,18 @@ module AppUp
         shell.notify( "Running RailsUp\n----------")
 
         files.each do |file|
+          exploded_path = Path.split(file)
+
           # allow rebundle on only Gemfile edit, in case you're
           # upping a gem, which probably doesn't have the Gemfile.lock
           # checked in
-          if File.basename(file).match(/Gemfile(\.lock)?|gemspec$/)
-            add_command(:bundle, dir: File.split(file)[0])
+          if exploded_path.last.match(/Gemfile(\.lock)?|gemspec$/)
+            add_command(:bundle, dir: exploded_path[0..-2])
           end
 
-          if file.match(/db\/migrate/)
-            add_command(:migrate, dir: file.sub(/\/db\/migrate\/.*/, ''))
+          if exploded_path.include?("migrate")
+            last_db_index =  exploded_path.rindex("db")
+            add_command(:migrate, dir: exploded_path[0...last_db_index])
           end
         end
 
@@ -50,7 +53,7 @@ module AppUp
           }
 
           actions.each do |command|
-            shell.enqueue(:notify, "#{i.to_s.rjust(command_count.length)}/#{command_count.to_s} #{command.to_s.ljust(7)} : #{dir}")
+            shell.enqueue(:notify, "#{i.to_s.rjust(command_count.length)}/#{command_count.to_s} #{command.to_s.ljust(7)} : #{Path.join(dir)}")
             i+=1
           end
 

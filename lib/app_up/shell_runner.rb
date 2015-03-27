@@ -21,7 +21,7 @@ module AppUp
     # The block passed to run is a callback. It is used
     # to add a dependent command to the queue.
     def run(cmd, dir: working_directory, &block)
-      command = "cd #{dir} && #{cmd}"
+      command = "cd #{Path.relative_join(dir)} && #{cmd}"
       handle_output_for(command)
 
       shell_out(command).split("\n").tap do

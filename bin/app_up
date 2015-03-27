@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'thor'
+require 'pry'
+require 'pry-rescue'
 require_relative '../lib/app_up'
 
 class AppUpCLI < Thor
@@ -12,13 +14,15 @@ class AppUpCLI < Thor
   option :db_reset, aliases: ['--reset', '--drop-dbs'], type: :boolean, desc: "Drop and recreate all databases"
 
   def run_hooks
-    shell = AppUp::ShellRunner.new(
-      log_path: '/tmp/app_up.log',
-      working_directory: '.'
-    )
+    Pry.rescue do
+      shell = AppUp::ShellRunner.new(
+        log_path: '/tmp/app_up.log',
+        working_directory: '.'
+      )
 
-    files = AppUp::Repo.new(shell, options).files
-    AppUp::HookRunner.new(shell, files, options).run
+      files = AppUp::Repo.new(shell, options).files
+      AppUp::HookRunner.new(shell, files, options).run
+    end
   end
 
   default_task :run_hooks

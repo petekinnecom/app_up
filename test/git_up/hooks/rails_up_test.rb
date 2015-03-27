@@ -41,9 +41,9 @@ module AppUp
 
         hook.run
         assert_equal 3, @shell.history[:enqueue].select {|c| c[0]==:run}.size
-        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: "folder/sub_folder"]), @shell.history
-        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: "other_folder/other_subfolder/more"]), @shell.history
-        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: "some_gem/thing"]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: [".", "folder", "sub_folder"]]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: [".", "other_folder", "other_subfolder", "more"]]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, RailsUp::BUNDLE_COMMAND, dir: [".", "some_gem", "thing"]]), @shell.history
       end
 
       def test_migrate_directories
@@ -59,10 +59,10 @@ module AppUp
 
         hook.run
         assert_equal 4, @shell.history[:enqueue].select {|c| c[0]==:run}.size
-        assert @shell.history[:enqueue].include?([:run, "migrate_test", dir: "folder/sub_folder"]), @shell.history
-        assert @shell.history[:enqueue].include?([:run, "migrate_development", dir: "folder/sub_folder"]), @shell.history
-        assert @shell.history[:enqueue].include?([:run, "migrate_test", dir: "other_folder/other_subfolder/more"]), @shell.history
-        assert @shell.history[:enqueue].include?([:run, "migrate_development", dir: "other_folder/other_subfolder/more"]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, "migrate_test", dir: [".", "folder", "sub_folder"]]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, "migrate_development", dir: [".", "folder", "sub_folder"]]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, "migrate_test", dir: [".", "other_folder", "other_subfolder", "more"]]), @shell.history
+        assert @shell.history[:enqueue].include?([:run, "migrate_development", dir: [".", "other_folder", "other_subfolder", "more"]]), @shell.history
       end
 
       def test_migrate__drops_db
