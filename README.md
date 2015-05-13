@@ -25,6 +25,9 @@ Running RailsUp
 6/6 migrate  : ./apps/blog_app/engines/users
 ```
 
+When given no arguments, `git_up`'s default action is to `pull --rebase origin master`.
+
+
 You can also call `app_up` directly, but this is more rare:
 
 ```
